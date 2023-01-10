@@ -1,0 +1,107 @@
+\documentclass{article}
+
+\newcommand{\hs}{\hspace{2mm}}
+
+\usepackage[rm]{roboto}
+\usepackage{xcolor}
+% https://davidmathlogic.com/colorblind/
+\definecolor{CBRed}{HTML}{D81B60}
+\definecolor{CBBlue}{HTML}{1E88E5}
+\definecolor{CBGold}{HTML}{FFC107}
+\definecolor{CBGreen}{HTML}{004D40}
+% https://jfly.uni-koeln.de/color/ 
+%\definecolor{CBRed}{RGB}{213,94,0}% Vermillion
+%\definecolor{CBBlue}{RGB}{86,180,233}% Sky Blue
+%\definecolor{CBGold}{RGB}{240,228,66}% Yellow
+%\definecolor{CBGreen}{RGB}{0,158,115}% Greenish Blue
+
+\usepackage{datatool}
+\usepackage{filecontents}
+\usepackage{tikz}
+\usepackage[colorlinks, bookmarksopen, backref,
+        	pdfauthor={Your name},
+        	pdftitle={Your name},
+        	pdfcreator={pdftex},
+        	pdfsubject={CV},
+        	linkcolor={blue},
+        	anchorcolor={black},
+        	citecolor={green},
+        	filecolor={magenta},
+        	menucolor={blue},
+        	plainpages=false,pdfpagelabels,
+        	urlcolor={blue}]{hyperref}
+
+\begin{document}
+%=============================================
+%      B E G I N       T I M E L I N E
+%=============================================
+\usetikzlibrary{shadows}
+\usetikzlibrary{positioning}
+
+% The following section will create the file tasks.dat
+% Once the file is created, modifications will need to happen there
+\begin{filecontents*}{tasks.dat}
+phase,taskid,name,position,size,orientation,label,anchor,href
+Publications,Author1,Fiction,2.5,5,1.68,above,north,tl:Author
+Publications,Author2,Humanities,9,11,0.49,above,north,tl:HumSch
+Publications,SciSch,Math \& Science,19,18,0.1,above,north,tl:SciSch
+Industry,eng1,Laboratrio Multimedial (Col.),2,3,-2.68,below,south,tl:Industry
+Industry,eng2,CAVIIAR (Col.),5,3,-1.8,below,south,tl:Industry
+Industry,eng3,ISF (FL),10,7,-0.87,below,south,tl:Industry
+Industry,eng4,CAVIIAR Inc (FL),15,4,-1.9,below,south,tl:Industry
+Academia,PDUM,PD UM,14.5,1,5.5,above,north,tl:Academic
+Academia,PDOSU,PD OSU,16,2.5,1,above,north,tl:Academic
+Academia,UGA1,Ast. Prof. UGA,19,4,1,above,north,tl:Academic
+Academia,UGA2,Asc. Prof. UGA,22.5,3,1,above,north,tl:Academic
+Academia,UGA2,Prof. UTSA,26,4,1,above,north,tl:Academic
+Admin,Dir1,Lead of OPE,18.5,3,-0.8,below,south,tl:Admin
+Admin,Dir2,Director of LACSI,23,1.5,-6.5,below,south,tl:Admin
+Admin,Dir3,Chair of Math,26,3.7,-0.6,below,south,tl:Admin
+\end{filecontents*}
+
+\DTLloaddb[noheader=false]{tasks}{tasks.dat}
+%
+{
+    %\leftskip0em
+    \resizebox{\textwidth}{!}{%
+        \begin{tikzpicture}[year/.style={font=\bfseries, text=black},
+            Publications/.style={fill=CBGreen,circle,opacity=0.2},
+            Industry/.style={fill=CBBlue,circle,opacity=1},
+            Academia/.style={fill=CBGold,circle,opacity=1},
+            Admin/.style={fill=CBRed,circle,opacity=1}]
+        \Large
+            %%%%% Tasks
+            \DTLforeach*{tasks} 
+                {\phase=phase, 
+                \taskid=taskid, 
+                \name=name, 
+                \position=position,
+                \size=size, 
+                \orientation=orientation,
+                \label=label,
+                \anchor=anchor,
+                \hyref=href}
+                {\node(\taskid)[\phase, minimum size=\size*2 em] at (\position, 0) {};\draw (node cs:name=\taskid, anchor=\anchor) to ++(0,\size*\orientation) node[\label, scale=1.4] {\hyperlink{\hyref}{\name}};}
+            \filldraw[fill=white, draw=white,line width=1ex,opacity=0.75] (-3.5,-0.15) rectangle (30,0.15);
+            %%%%% Weeks.
+            \node[year] at (0,0) {1995};
+            \node[year] at (5,0) {2000};
+            \node[year] at (10,0) {2005};
+            \node[year] at (15,0) {2010};
+            \node[year] at (20,0) {2015};
+            \node[year] at (25,0) {2020};
+            \node[year] at (28,0) {2023};
+        \end{tikzpicture}
+    }
+}
+\begin{center}
+	\fboxsep=2mm \fboxrule=0mm
+	\fcolorbox{black}{CBBlue}{\null} Industry \& Entrepreneurship \hs
+	\fcolorbox{black}{CBRed}{\null} Academic Administration \hs \\ 
+	\fcolorbox{black}{CBGreen!20}{\null} Publications \hspace{5mm}
+	\fcolorbox{black}{CBGold}{\null} Academic Appointments \hs
+\end{center}
+%=============================================
+%         E N D      T I M E L I N E
+%=============================================
+\end{document}
